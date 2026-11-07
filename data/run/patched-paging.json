@@ -1,0 +1,25 @@
+{
+ "run": "patched-paging",
+ "steps": [
+  {
+   "call": "get_instructions",
+   "input": {},
+   "result": "{\"result\":\"You are an AI assistant for querying the CLP log database using CLP-KQL (CKQL). Your job is to generate CKQL that faithfully expresses the user's intent and show key logs to the user:\\n- Start broad to learn the schema/fields using wildcard searches like *, then narrow the query to return a manageable result set.\\n- When showing log messages or when the user wants to see log messages, provide the hyperlink from the result's link field.\\n\\nCKQL rules (read carefully; items marked CRITICAL will fail if violated):\\n- CRITICAL -- Substrings: use wildcards for partial matches -- * (any s"
+  },
+  {
+   "call": "search_by_kql",
+   "input": {
+    "kql_query": "message: *pgbench_tellers*"
+   },
+   "result": "{\"items\":[\"timestamp: 2023-03-27T04:32:15.929Z, message: {\\\"timestamp\\\":\\\"2023-03-27 00:32:15.929 EDT\\\",\\\"pid\\\":7892,\\\"session_id\\\":\\\"64211b34.1ed4\\\",\\\"line_num\\\":124307,\\\"session_start\\\":\\\"2023-03-27 00:27:32 EDT\\\",\\\"txid\\\":63074,\\\"error_severity\\\":\\\"LOG\\\",\\\"message\\\":\\\"statement: UPDATE pgbench_tellers SET tbalance = tbalance + 4809 WHERE tid = 405;\\\",\\\"query_id\\\":0,\\\"backend_type\\\":\\\"client backend\\\",\\\"vxid\\\":\\\"8/7770\\\",\\\"remote_host\\\":\\\"[local]\\\",\\\"user\\\":\\\"postgres\\\",\\\"dbname\\\":\\\"example\\\",\\\"application_name\\\":\\\"pgbench\\\",\\\"ps\\\":\\\"idle in transaction\\\"}\\n, link: http://localhost:4000/stre"
+  },
+  {
+   "call": "get_nth_page",
+   "input": {
+    "page_index": 1
+   },
+   "result": "{\"items\":[\"timestamp: 2023-03-27T04:32:15.912Z, message: {\\\"timestamp\\\":\\\"2023-03-27 00:32:15.912 EDT\\\",\\\"pid\\\":7893,\\\"session_id\\\":\\\"64211b34.1ed5\\\",\\\"line_num\\\":124773,\\\"session_start\\\":\\\"2023-03-27 00:27:32 EDT\\\",\\\"txid\\\":63067,\\\"error_severity\\\":\\\"LOG\\\",\\\"message\\\":\\\"statement: UPDATE pgbench_tellers SET tbalance = tbalance + -252 WHERE tid = 79;\\\",\\\"query_id\\\":0,\\\"backend_type\\\":\\\"client backend\\\",\\\"vxid\\\":\\\"9/7799\\\",\\\"remote_host\\\":\\\"[local]\\\",\\\"user\\\":\\\"postgres\\\",\\\"dbname\\\":\\\"example\\\",\\\"application_name\\\":\\\"pgbench\\\",\\\"ps\\\":\\\"idle in transaction\\\"}\\n, link: http://localhost:4000/strea"
+  }
+ ],
+ "answer": "I searched with `message: *pgbench_tellers*`, which returned 1,000 results at 10 per page. Page indexes start at 0, so I fetched page 2 with `page_index` 1. Its 10 events, newest first, have these `line_num` values:\n\n| # | line_num | Timestamp (EDT) | pid | Statement |\n|---|---|---|---|---|\n| 1 | 124773 | 00:32:15.912 | 7893 | `UPDATE pgbench_tellers ... + -252 WHERE tid = 79` |\n| 2 | 124723 | 00:32:15.912 | 7888 | `... + -1891 WHERE tid = 25` |\n| 3 | 124291 | 00:32:15.912 | 7892 | `... + -3373 WHERE tid = 406` |\n| 4 | 124313 | 00:32:15.903 | 7891 | `... + -195 WHERE tid = 472` |\n| 5 | 124571 | 00:32:15.895 | 7894 | `... + 308 WHERE tid = 217` |\n| 6 | 124707 | 00:32:15.895 | 7888 | `... + -886 WHERE tid = 176` |\n| 7 | 124439 | 00:32:15.895 | 7890 | `... + 4801 WHERE tid = 1` |\n| 8 | 125203 | 00:32:15.895 | 7886 | `... + 130 WHERE tid = 436` |\n| 9 | 124275 | 00:32:15.895 | 7892 | `... + -766 WHERE tid = 472` |\n| 10 | 124559 | 00:32:15.895 | 7887 | `... + 2290 WHERE tid = 80` |\n\n**The page 2 line_num values are:** 124773, 124723, 124291, 124313, 124571, 124707, 124439, 125203, 124275, 124559.\n\nThe `line_num` values aren't in order because each one counts lines within its own session (`pid`), not across the whole log. All 10 events come from the same 2023-03-27 log file. To open one, for example the first, use this link: http://localhost:4000/streamFile?type=json&streamId=35ed12af-6d51-4f8a-8bf3-3e3e99cd9785&dataset=default&logEventIdx=999852\n\nThe total of exactly 1,000 results looks like a cap on how many matches the search returns, so the real number of matching events may be higher."
+}

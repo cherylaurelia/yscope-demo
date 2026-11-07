@@ -1,0 +1,26 @@
+@import "tailwindcss";
+
+/* Colors and fonts from yscope.com's CSS (brilliant-azure scale, Geist) */
+@theme {
+  --color-azure: #1888fa;
+  --color-azure-600: #0466c8;
+  --color-azure-700: #034c96;
+  --color-azure-50: #e6f2fe;
+  --color-ink: #011932;
+  --color-deep: #010912;
+  --color-text: #212529;
+  --color-muted: #495057;
+  --color-line: #dee2e6;
+  --color-bad: #b02a37;
+  --color-bad-bg: #fbe9eb;
+  --color-good: #146c43;
+  --color-good-bg: #e8f3ee;
+  --font-sans: var(--font-geist-sans), system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+}
+
+body {
+  background: #ffffff;
+  color: var(--color-text);
+  font-family: var(--font-sans);
+}

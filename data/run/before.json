@@ -1,0 +1,39 @@
+{
+ "run": "before",
+ "steps": [
+  {
+   "call": "get_instructions",
+   "input": {},
+   "result": "{\"result\":\"You are an AI assistant for querying the CLP log database using CLP-KQL (CKQL). Your job is to generate CKQL that faithfully expresses the user's intent and show key logs to the user:\\n- Start broad to learn the schema/fields using wildcard searches like *, then narrow the query to return a manageable result set.\\n- When showing log messages or when the user wants to see log messages, provide the hyperlink from the result's link field.\\n\\nCKQL rules (read carefully; items marked CRITICAL will fail if violated):\\n- CRITICAL -- Substrings: use wildcards for partial matches -- * (any s"
+  },
+  {
+   "call": "search_by_kql",
+   "input": {
+    "kql_query": "error_severity: NOTICE"
+   },
+   "result": "Error calling tool 'search_by_kql': 'str' object is not callable"
+  },
+  {
+   "call": "search_by_kql",
+   "input": {
+    "kql_query": "*"
+   },
+   "result": "Error calling tool 'search_by_kql': 'str' object is not callable"
+  },
+  {
+   "call": "search_by_kql_with_timestamp_range",
+   "input": {
+    "kql_query": "error_severity: NOTICE",
+    "formatted_begin_timestamp": "1970-01-01T00:00:00.000Z",
+    "formatted_end_timestamp": "2026-12-31T23:59:59.999Z"
+   },
+   "result": "Error calling tool 'search_by_kql_with_timestamp_range': 'str' object is not callable"
+  },
+  {
+   "call": "hello_world",
+   "input": {},
+   "result": "{\"message\":\"Hello World, clp-mcp-server user!\",\"server\":\"clp-mcp-server\",\"status\":\"running\"}"
+  }
+ ],
+ "answer": "I couldn't answer the question: every search tool on the CLP MCP server failed, so I don't know how many PostgreSQL events have `error_severity` NOTICE or what their messages say.\n\nHere is exactly what failed:\n\n1. `get_instructions` worked and returned the CKQL query rules.\n2. `search_by_kql` with `error_severity: NOTICE` returned `Error calling tool 'search_by_kql': 'str' object is not callable`.\n3. `search_by_kql` with just `*` (match everything) returned the same error, so the problem isn't the NOTICE query itself.\n4. `search_by_kql_with_timestamp_range` with `error_severity: NOTICE` from 1970-01-01T00:00:00.000Z to 2026-12-31T23:59:59.999Z returned `Error calling tool 'search_by_kql_with_timestamp_range': 'str' object is not callable`.\n5. `hello_world` worked and reported `\"status\":\"running\"`, so the server is reachable.\n\nThe server is running, but its search code crashes on every query. \"'str' object is not callable\" is a Python error, which suggests a bug or misconfiguration in the server's search handling rather than a bad query. I didn't try `get_nth_page` because it can only page through results from a search that succeeded.\n\nTo get an answer, check the `clp-mcp-server` logs or configuration for that error (also check its connection to the CLP backend), then rerun the query."
+}

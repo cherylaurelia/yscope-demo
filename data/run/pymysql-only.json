@@ -1,0 +1,37 @@
+{
+ "run": "pymysql-only",
+ "steps": [
+  {
+   "call": "get_instructions",
+   "input": {},
+   "result": "{\"result\":\"You are an AI assistant for querying the CLP log database using CLP-KQL (CKQL). Your job is to generate CKQL that faithfully expresses the user's intent and show key logs to the user:\\n- Start broad to learn the schema/fields using wildcard searches like *, then narrow the query to return a manageable result set.\\n- When showing log messages or when the user wants to see log messages, provide the hyperlink from the result's link field.\\n\\nCKQL rules (read carefully; items marked CRITICAL will fail if violated):\\n- CRITICAL -- Substrings: use wildcards for partial matches -- * (any s"
+  },
+  {
+   "call": "search_by_kql",
+   "input": {
+    "kql_query": "error_severity: NOTICE"
+   },
+   "result": "{\"Error\":\"Please call `get_instructions()` first to understand how to use this MCP server.\"}"
+  },
+  {
+   "call": "get_instructions",
+   "input": {},
+   "result": "{\"result\":\"You are an AI assistant for querying the CLP log database using CLP-KQL (CKQL). Your job is to generate CKQL that faithfully expresses the user's intent and show key logs to the user:\\n- Start broad to learn the schema/fields using wildcard searches like *, then narrow the query to return a manageable result set.\\n- When showing log messages or when the user wants to see log messages, provide the hyperlink from the result's link field.\\n\\nCKQL rules (read carefully; items marked CRITICAL will fail if violated):\\n- CRITICAL -- Substrings: use wildcards for partial matches -- * (any s"
+  },
+  {
+   "call": "search_by_kql",
+   "input": {
+    "kql_query": "error_severity: NOTICE"
+   },
+   "result": "{\"Error\":\"Please call `get_instructions()` first to understand how to use this MCP server.\"}"
+  },
+  {
+   "call": "search_by_kql",
+   "input": {
+    "kql_query": "*"
+   },
+   "result": "{\"Error\":\"Please call `get_instructions()` first to understand how to use this MCP server.\"}"
+  }
+ ],
+ "answer": "I couldn't get an answer: the clp MCP server refused every search, so I have no NOTICE count and no messages to report.\n\n1. `mcp__clp__get_instructions` worked and returned the CKQL usage guide.\n2. `mcp__clp__search_by_kql` with `error_severity: NOTICE` then failed with:\n   `{\"Error\":\"Please call `get_instructions()` first to understand how to use this MCP server.\"}`\n3. I called `get_instructions` again (it worked again) and retried the same search. Same error.\n4. A plain `*` search also returned the same error.\n\nThe server never seems to remember that `get_instructions` was called. My guess is that it doesn't keep its state between tool calls, for example because each call opens a new session. That is a guess; the tool results don't show the cause.\n\nTo fix it, check how the clp MCP server keeps track of sessions (its transport setting, or whether it runs statelessly), or restart it. Then I can run the query again."
+}

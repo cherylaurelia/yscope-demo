@@ -1,0 +1,18 @@
+{
+ "run": "patched-1",
+ "steps": [
+  {
+   "call": "get_instructions",
+   "input": {},
+   "result": "{\"result\":\"You are an AI assistant for querying the CLP log database using CLP-KQL (CKQL). Your job is to generate CKQL that faithfully expresses the user's intent and show key logs to the user:\\n- Start broad to learn the schema/fields using wildcard searches like *, then narrow the query to return a manageable result set.\\n- When showing log messages or when the user wants to see log messages, provide the hyperlink from the result's link field.\\n\\nCKQL rules (read carefully; items marked CRITICAL will fail if violated):\\n- CRITICAL -- Substrings: use wildcards for partial matches -- * (any s"
+  },
+  {
+   "call": "search_by_kql",
+   "input": {
+    "kql_query": "error_severity: NOTICE"
+   },
+   "result": "{\"items\":[\"timestamp: 2023-03-27T04:26:51.011Z, message: {\\\"timestamp\\\":\\\"2023-03-27 00:26:51.011 EDT\\\",\\\"pid\\\":7858,\\\"session_id\\\":\\\"64211b0b.1eb2\\\",\\\"line_num\\\":11,\\\"session_start\\\":\\\"2023-03-27 00:26:51 EDT\\\",\\\"txid\\\":0,\\\"error_severity\\\":\\\"NOTICE\\\",\\\"message\\\":\\\"table \\\\\\\"pgbench_accounts\\\\\\\" does not exist, skipping\\\",\\\"query_id\\\":0,\\\"backend_type\\\":\\\"client backend\\\",\\\"vxid\\\":\\\"3/14\\\",\\\"remote_host\\\":\\\"[local]\\\",\\\"user\\\":\\\"postgres\\\",\\\"dbname\\\":\\\"example\\\",\\\"application_name\\\":\\\"pgbench\\\",\\\"statement\\\":\\\"drop table if exists pgbench_accounts, pgbench_branches, pgbench_history, pgbench_te"
+  }
+ ],
+ "answer": "There are **4 events** with `error_severity: NOTICE`. The query `error_severity: NOTICE` returned 4 items on a single page, with no further pages.\n\nAll four come from one pgbench session (pid 7858, session `64211b0b.1eb2`, user `postgres`, database `example`) at 2023-03-27 00:26:51.011 EDT. They were all produced by the same statement: `drop table if exists pgbench_accounts, pgbench_branches, pgbench_history, pgbench_tellers`.\n\n| line_num | message | link |\n|---|---|---|\n| 11 | `table \"pgbench_accounts\" does not exist, skipping` | [view](http://localhost:4000/streamFile?type=json&streamId=35ed12af-6d51-4f8a-8bf3-3e3e99cd9785&dataset=default&logEventIdx=188) |\n| 13 | `table \"pgbench_branches\" does not exist, skipping` | [view](http://localhost:4000/streamFile?type=json&streamId=35ed12af-6d51-4f8a-8bf3-3e3e99cd9785&dataset=default&logEventIdx=190) |\n| 15 | `table \"pgbench_history\" does not exist, skipping` | [view](http://localhost:4000/streamFile?type=json&streamId=35ed12af-6d51-4f8a-8bf3-3e3e99cd9785&dataset=default&logEventIdx=192) |\n| 17 | `table \"pgbench_tellers\" does not exist, skipping` | [view](http://localhost:4000/streamFile?type=json&streamId=35ed12af-6d51-4f8a-8bf3-3e3e99cd9785&dataset=default&logEventIdx=194) |\n\nThese notices are harmless. pgbench drops its four tables before creating them, and none of them existed yet."
+}

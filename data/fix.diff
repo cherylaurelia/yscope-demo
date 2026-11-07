@@ -1,0 +1,21 @@
+diff --git a/components/clp-mcp-server/pyproject.toml b/components/clp-mcp-server/pyproject.toml
+index 8e7fea9b..389c0c57 100644
+--- a/components/clp-mcp-server/pyproject.toml
++++ b/components/clp-mcp-server/pyproject.toml
+@@ -8,10 +8,15 @@ requires-python = ">=3.10"
+ dependencies = [
+     "aiomysql>=0.3.2",
+     "click>=8.3.1",
+-    "fastmcp>=2.14.4",
++    # FastMCP 4 gives each request on the 2026-07-28 MCP protocol a new `ctx.session_id`, which
++    # breaks the per-session `get_instructions` gate and result paging.
++    "fastmcp>=2.14.4,<4",
+     "msgpack>=1.1.2",
+     "paginate>=0.5.7",
+     "pymongo>=4.16.0",
++    # aiomysql 0.3.2 imports `escape_bytes_prefixed`, which PyMySQL 1.2.1+ no longer provides
++    # (aio-libs/aiomysql#1080).
++    "pymysql>=1.1.2,<1.2.1",
+ ]
+ 
+ [project.scripts]
