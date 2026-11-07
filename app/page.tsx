@@ -125,7 +125,7 @@ export default function Page() {
               <p className="mt-2 text-sm leading-relaxed text-muted">
                 <code className="font-mono">ClpConnector.submit_query</code> inserts the msgpack job config (bytes). aiomysql escapes
                 bytes with PyMySQL&apos;s <code className="font-mono">escape_bytes_prefixed</code>, which is now a placeholder string, so
-                every search raises <code className="font-mono">&apos;str&apos; object is not callable</code>. PyMySQL 1.2.2 makes the
+                every search raises <code className="font-mono">&apos;str&apos; object is not callable</code>. PyMySQL 1.2.1 and 1.2.2 make the
                 container crash on import; 1.2.0 works. Upstream:{" "}
                 <a className="text-azure-700 underline" href="https://github.com/aio-libs/aiomysql/issues/1080">aiomysql#1080</a>, open.
               </p>
