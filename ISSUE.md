@@ -14,7 +14,7 @@ The traceback ends in `aiomysql/connection.py:418 escape_bytes_prefixed(obj)`, w
 msgpack job config. The image ships PyMySQL 1.2.3, where `escape_bytes_prefixed` is now a placeholder string
 (PyMySQL/PyMySQL#1274). aiomysql 0.3.2 still imports it (aio-libs/aiomysql#1080, still open).
 Tested on the same container: PyMySQL 1.2.0 and 1.1.2 work, 1.2.1 and 1.2.2 make the MCP container exit at import
-(`cannot import name 'escape_dict'`), and 1.2.3 fails every search.
+(ImportError from aiomysql's `pymysql.converters` imports), and 1.2.3 fails every search.
 
 With PyMySQL swapped back, a second break shows up with Claude Code as the client. Every search returns
 "Please call `get_instructions()` first", even right after calling it. The image ships fastmcp 4.1.4. In fastmcp 4, a client on the
